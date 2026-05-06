@@ -15,7 +15,7 @@ function Signup() {
   const handleSignup = async () => {
     try {
       await axios.post(
-        "http://localhost:5001/api/auth/signup",
+        "https://team-task-manager-production-fda8.up.railway.app/api/auth/signup",
         formData
       );
 

@@ -23,7 +23,7 @@ function Dashboard() {
   const fetchProjects = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5001/api/projects",
+        "https://team-task-manager-production-fda8.up.railway.app/api/projects",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -44,7 +44,7 @@ function Dashboard() {
   const fetchTasks = async (projectId) => {
     try {
       const res = await axios.get(
-        `http://localhost:5001/api/tasks/project/${projectId}`,
+        `https://team-task-manager-production-fda8.up.railway.app/api/tasks/project/${projectId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -66,7 +66,7 @@ function Dashboard() {
     }
 
     await axios.post(
-      "http://localhost:5001/api/projects",
+      "https://team-task-manager-production-fda8.up.railway.app/api/projects",
       projectData,
       {
         headers: {
@@ -92,7 +92,7 @@ function Dashboard() {
   const createTask = async () => {
     try {
       await axios.post(
-        "http://localhost:5001/api/tasks",
+        "https://team-task-manager-production-fda8.up.railway.app/api/tasks",
         {
           ...taskData,
           project: projects[0]._id,
@@ -122,7 +122,7 @@ function Dashboard() {
   const markDone = async (taskId) => {
     try {
       await axios.patch(
-        `http://localhost:5001/api/tasks/${taskId}/status`,
+        `https://team-task-manager-production-fda8.up.railway.app/api/tasks/${taskId}/status`,
         {
           status: "Done",
         },
@@ -132,7 +132,6 @@ function Dashboard() {
           },
         }
       );
-
       fetchTasks(projects[0]._id);
     } catch (error) {
       console.log(error);
