@@ -5,6 +5,8 @@ import { useNavigate, Link } from "react-router-dom";
 function Login() {
   const navigate = useNavigate();
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -12,8 +14,6 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      const API_URL = import.meta.env.VITE_API_URL;
-
       const res = await axios.post(
         `${API_URL}/api/auth/login`,
         formData
@@ -26,7 +26,13 @@ function Login() {
 
       navigate("/dashboard");
     } catch (error) {
-      alert(error.response?.data?.error || "Login failed");
+      console.log(error);
+
+      alert(
+        error.response?.data?.error ||
+        error.message ||
+        "Login failed"
+      );
     }
   };
 
