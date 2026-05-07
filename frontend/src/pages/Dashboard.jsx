@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 function Dashboard() {
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const [projects, setProjects] = useState([]);
   const [tasks, setTasks] = useState([]);
 
@@ -23,7 +25,7 @@ function Dashboard() {
   const fetchProjects = async () => {
     try {
       const res = await axios.get(
-        "https://team-task-manager-production-fda8.up.railway.app/api/projects",
+        `${API_URL}/api/projects`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -44,7 +46,7 @@ function Dashboard() {
   const fetchTasks = async (projectId) => {
     try {
       const res = await axios.get(
-        `https://team-task-manager-production-fda8.up.railway.app/api/tasks/project/${projectId}`,
+        `${API_URL}/api/tasks/project/${projectId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -59,40 +61,39 @@ function Dashboard() {
   };
 
   const createProject = async () => {
-  try {
-
-    if (!projectData.name || !projectData.description) {
-      return alert("Fill all project fields");
-    }
-
-    await axios.post(
-      "https://team-task-manager-production-fda8.up.railway.app/api/projects",
-      projectData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    try {
+      if (!projectData.name || !projectData.description) {
+        return alert("Fill all project fields");
       }
-    );
 
-    alert("Project created 🚀");
+      await axios.post(
+        `${API_URL}/api/projects`,
+        projectData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    setProjectData({
-      name: "",
-      description: "",
-    });
+      alert("Project created 🚀");
 
-    fetchProjects();
+      setProjectData({
+        name: "",
+        description: "",
+      });
 
-  } catch (error) {
-    alert(error.response?.data?.error || "Failed");
-  }
-};
+      fetchProjects();
+
+    } catch (error) {
+      alert(error.response?.data?.error || "Failed");
+    }
+  };
 
   const createTask = async () => {
     try {
       await axios.post(
-        "https://team-task-manager-production-fda8.up.railway.app/api/tasks",
+        `${API_URL}/api/tasks`,
         {
           ...taskData,
           project: projects[0]._id,
@@ -114,6 +115,7 @@ function Dashboard() {
       });
 
       fetchTasks(projects[0]._id);
+
     } catch (error) {
       alert(error.response?.data?.error || "Failed");
     }
@@ -122,7 +124,7 @@ function Dashboard() {
   const markDone = async (taskId) => {
     try {
       await axios.patch(
-        `https://team-task-manager-production-fda8.up.railway.app/api/tasks/${taskId}/status`,
+        `${API_URL}/api/tasks/${taskId}/status`,
         {
           status: "Done",
         },
@@ -132,7 +134,9 @@ function Dashboard() {
           },
         }
       );
+
       fetchTasks(projects[0]._id);
+
     } catch (error) {
       console.log(error);
     }
@@ -149,7 +153,6 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* HEADER */}
       <div className="border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
           <div>
@@ -180,12 +183,10 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* TOP SECTION */}
       <div className="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        {/* CREATE PROJECT */}
         {role === "Admin" && (
-          <div className="bg-gray-900 border border-gray-800 hover:border-blue-500 transition duration-300 rounded-2xl p-6 shadow-lg">
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-lg">
             <h2 className="text-2xl font-bold mb-6">
               Create Project
             </h2>
@@ -201,7 +202,7 @@ function Dashboard() {
                     name: e.target.value,
                   })
                 }
-                className="w-full p-4 rounded-xl bg-gray-800 border border-gray-700 outline-none focus:border-blue-500"
+                className="w-full p-4 rounded-xl bg-gray-800 border border-gray-700"
               />
 
               <textarea
@@ -213,12 +214,12 @@ function Dashboard() {
                     description: e.target.value,
                   })
                 }
-                className="w-full p-4 rounded-xl bg-gray-800 border border-gray-700 outline-none focus:border-blue-500"
+                className="w-full p-4 rounded-xl bg-gray-800 border border-gray-700"
               />
 
               <button
                 onClick={createProject}
-                className="w-full bg-blue-600 hover:bg-blue-700 hover:scale-[1.02] transition p-4 rounded-xl font-semibold"
+                className="w-full bg-blue-600 hover:bg-blue-700 transition p-4 rounded-xl font-semibold"
               >
                 Create Project
               </button>
@@ -226,9 +227,8 @@ function Dashboard() {
           </div>
         )}
 
-        {/* CREATE TASK */}
         {role === "Admin" && (
-          <div className="bg-gray-900 border border-gray-800 hover:border-green-500 transition duration-300 rounded-2xl p-6 shadow-lg">
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-lg">
             <h2 className="text-2xl font-bold mb-6">
               Create Task
             </h2>
@@ -244,7 +244,7 @@ function Dashboard() {
                     title: e.target.value,
                   })
                 }
-                className="w-full p-4 rounded-xl bg-gray-800 border border-gray-700 outline-none focus:border-green-500"
+                className="w-full p-4 rounded-xl bg-gray-800 border border-gray-700"
               />
 
               <textarea
@@ -256,7 +256,7 @@ function Dashboard() {
                     description: e.target.value,
                   })
                 }
-                className="w-full p-4 rounded-xl bg-gray-800 border border-gray-700 outline-none focus:border-green-500"
+                className="w-full p-4 rounded-xl bg-gray-800 border border-gray-700"
               />
 
               <select
@@ -267,7 +267,7 @@ function Dashboard() {
                     priority: e.target.value,
                   })
                 }
-                className="w-full p-4 rounded-xl bg-gray-800 border border-gray-700 outline-none focus:border-green-500"
+                className="w-full p-4 rounded-xl bg-gray-800 border border-gray-700"
               >
                 <option>Low</option>
                 <option>Medium</option>
@@ -283,116 +283,18 @@ function Dashboard() {
                     dueDate: e.target.value,
                   })
                 }
-                className="w-full p-4 rounded-xl bg-gray-800 border border-gray-700 outline-none focus:border-green-500"
+                className="w-full p-4 rounded-xl bg-gray-800 border border-gray-700"
               />
 
               <button
                 onClick={createTask}
-                className="w-full bg-green-600 hover:bg-green-700 hover:scale-[1.02] transition p-4 rounded-xl font-semibold"
+                className="w-full bg-green-600 hover:bg-green-700 transition p-4 rounded-xl font-semibold"
               >
                 Create Task
               </button>
             </div>
           </div>
         )}
-
-        {/* PROJECTS */}
-        <div className="bg-gray-900 border border-gray-800 hover:border-purple-500 transition duration-300 rounded-2xl p-6 shadow-lg">
-          <h2 className="text-2xl font-bold mb-6">
-            Projects
-          </h2>
-
-          <div className="space-y-4">
-            {projects.length === 0 ? (
-              <p className="text-gray-500">
-                No projects yet
-              </p>
-              ) : (
-                projects.map((project) => (
-                <div
-                key={project._id}
-                className="bg-gray-800 hover:bg-gray-700 transition p-5 rounded-xl"
-                >
-              <h3 className="text-xl font-bold">
-                {project.name}
-              </h3>
-              <p className="text-gray-400 mt-2">
-                {project.description}
-              </p>
-          </div>
-          ))
-)}
-          </div>
-        </div>
-      </div>
-
-      {/* TASKS */}
-      <div className="max-w-7xl mx-auto px-6 pb-10">
-        <h2 className="text-3xl font-bold mb-6">
-          Tasks
-        </h2>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tasks.length === 0 ? (
-  <p className="text-gray-500">
-    No tasks available
-  </p>
-) : (
-  tasks.map((task) => (
-    <div
-      key={task._id}
-      className="bg-gray-900 border border-gray-800 hover:border-blue-500 transition duration-300 rounded-2xl p-6 shadow-lg"
-    >
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-2xl font-bold">
-          {task.title}
-        </h3>
-
-        {task.isOverdue && task.status !== "Done" && (
-          <span className="bg-red-600 px-3 py-1 rounded-full text-sm font-semibold">
-            OVERDUE
-          </span>
-        )}
-      </div>
-
-      <p className="text-gray-400 mb-5">
-        {task.description}
-      </p>
-
-      <div className="space-y-2">
-        <p>
-          Status:
-          <span
-            className={`ml-2 font-semibold ${
-              task.status === "Done"
-                ? "text-green-400"
-                : "text-yellow-400"
-            }`}
-          >
-            {task.status}
-          </span>
-        </p>
-
-        <p>
-          Priority:
-          <span className="ml-2 text-blue-400 font-semibold">
-            {task.priority}
-          </span>
-        </p>
-      </div>
-
-      {task.status !== "Done" && (
-        <button
-          onClick={() => markDone(task._id)}
-          className="mt-6 w-full bg-blue-600 hover:bg-blue-700 hover:scale-[1.02] transition p-3 rounded-xl font-semibold"
-        >
-          Mark as Done
-        </button>
-      )}
-    </div>
-  ))
-)}
-        </div>
       </div>
     </div>
   );

@@ -14,11 +14,11 @@ function Signup() {
 
   const handleSignup = async () => {
     try {
+      const API_URL = import.meta.env.VITE_API_URL;
       await axios.post(
-        "https://team-task-manager-production-45ad.up.railway.app/api/auth/signup",
+        `${API_URL}/api/auth/signup`,
         formData
       );
-
       alert("Signup successful 🚀");
       navigate("/login");
     } catch (error) {

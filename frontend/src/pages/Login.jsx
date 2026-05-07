@@ -12,8 +12,10 @@ function Login() {
 
   const handleLogin = async () => {
     try {
+      const API_URL = import.meta.env.VITE_API_URL;
+
       const res = await axios.post(
-        "https://team-task-manager-production-fda8.up.railway.app/api/auth/login",
+        `${API_URL}/api/auth/login`,
         formData
       );
 
