@@ -15,7 +15,6 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (Postman, curl, mobile apps)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -28,7 +27,6 @@ app.use(cors({
 }));
 
 app.options("*", cors());
-
 app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI)
@@ -48,7 +46,6 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 8080;
 
-
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on ${PORT}`);
 });
