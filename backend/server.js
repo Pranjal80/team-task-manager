@@ -1,31 +1,34 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-require('dotenv').config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+require("dotenv").config();
+
+const authRoutes = require("./routes/auth");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('API Running');
+app.get("/", (req, res) => {
+  res.send("API Running");
 });
 
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/projects', require('./routes/projects'));
-app.use('/api/tasks', require('./routes/tasks'));
-
-const PORT = process.env.PORT || 8080;
+app.use("/api/auth", authRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log('MongoDB Connected');
+    console.log("MongoDB Connected");
 
-    app.listen(PORT, () => {
-      console.log(`Server running on ${PORT}`);
+    app.listen(process.env.PORT || 8080, () => {
+      console.log("Server running on 8080");
     });
   })
-  .catch(err => {
+  .catch((err) => {
     console.log(err);
   });
