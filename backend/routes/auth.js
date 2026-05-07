@@ -11,10 +11,13 @@ router.post('/signup', async (req, res) => {
 
     const token = jwt.sign(
       { id: user._id },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }          
     );
 
-    res.json({ token, user });
+    const { password, ...userWithoutPassword } = user.toObject();
+
+    res.json({ token, user: userWithoutPassword });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -25,15 +28,19 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
 
     if (!user || !(await user.comparePassword(req.body.password))) {
-      return res.status(400).json({ error: 'Invalid credentials' });
+      return res.status(401).json({ error: 'Invalid credentials' });  
     }
 
     const token = jwt.sign(
       { id: user._id },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }          
     );
 
-    res.json({ token, user });
+   
+    const { password, ...userWithoutPassword } = user.toObject();
+
+    res.json({ token, user: userWithoutPassword });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
